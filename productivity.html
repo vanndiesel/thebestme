@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>the best me</title>
+  <!-- Google Fonts: Bebas Neue and Roboto -->
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+  <!-- Chart.js for data visualization -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* Global Styles */
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; padding: 0;
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(135deg, #fdfbfb, #ebedee);
+      color: #333;
+      transition: background 0.3s, color 0.3s;
+    }
+    h1, h2, h3 { font-family: 'Bebas Neue', cursive; }
+    .container {
+      max-width: 1200px; margin: 0 auto; padding: 20px;
+      margin-top: 70px; /* leave space for navbar */
+    }
+    /* Navbar */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 20px;
+      background-color: #217721; color: #fff;
+      z-index: 1000; transition: top 0.3s;
+    }
+    .navbar-left h1,
+    .navbar-left button {
+      margin: 0; font-size: 24px; font-family: 'Bebas Neue', cursive;
+      background: none; border: none; color: inherit; cursor: pointer;
+    }
+    .navbar-center { display: flex; gap: 15px; flex: 1; justify-content: center; }
+    .navbar-right { display: flex; align-items: center; }
+    .navbar button {
+      background-color: transparent; border: none; color: #fff;
+      font-family: 'Bebas Neue', cursive; font-size: 16px; cursor: pointer;
+      transition: color 0.3s;
+    }
+    .navbar button:hover { color: #ddd; }
+    /* Sections */
+    .section {
+      display: none; background: #fff; border-radius: 10px; padding: 20px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin-bottom: 20px;
+    }
+    .active { display: block; }
+    .sub-section { margin-bottom: 20px; }
+    .sub-section h3 { margin-bottom: 10px; border-bottom: 2px solid #4A90E2; padding-bottom: 5px; }
+    /* Input Group */
+    .input-group {
+      display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 10px;
+    }
+    input[type="text"], textarea, select, input[type="date"] {
+      padding: 8px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px;
+    }
+    .input-group input, .input-group select { max-width: 400px; flex: 1; }
+    .feeling-select { width: 80px; }
+    button { cursor: pointer; }
+    /* Chart and Journal */
+    #completionChart { background: #f9f9f9; border-radius: 10px; padding: 10px; }
+    #journalDisplay { margin-top: 20px; border: 1px solid #ccc; padding: 15px;
+                      border-radius: 10px; background-color: #fafafa; white-space: pre-wrap;
+                      min-height: 80px; }
+    /* Work Time */
+    #projectList li {
+      background: #e8f0fe; margin-bottom: 10px; padding: 10px; border-radius: 5px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    #projectList li button {
+      background-color: #50E3C2; border: none; color: #fff;
+      padding: 5px 10px; border-radius: 5px; font-size: 14px;
+      transition: background-color 0.3s;
+    }
+    #projectList li button:hover { background-color: #3db3a4; }
+    #totalWorkTimeDisplay { font-size: 18px; font-weight: 500; }
+    /* Buttons */
+    .add-btn {
+      background-color: #7ED321; color: #fff; border: none; padding: 8px 15px;
+      border-radius: 5px; transition: background-color 0.3s; font-family: 'Bebas Neue', cursive;
+    }
+    .add-btn:hover { background-color: #6bb11b; }
+    .small-btn {
+      background-color: #ddd; border: none; padding: 5px 8px; border-radius: 5px;
+      margin-left: 5px; font-size: 14px; transition: background-color 0.3s;
+    }
+    .small-btn:hover { background-color: #ccc; }
+    .small-select { margin-left: 5px; padding: 2px; font-size: 14px; width: 100px; }
+    /* Task Backgrounds */
+    .task-green { background-color: rgba(76, 175, 80, 0.3); }
+    .task-yellow { background-color: rgba(255, 193, 7, 0.3); }
+    .task-red { background-color: rgba(244, 67, 54, 0.3); }
+    /* Floating Timer */
+    #floatingTimer {
+      position: fixed; bottom: 20px; right: 20px;
+      background: #fff; border: 1px solid #ccc; border-radius: 10px; padding: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2); z-index: 1000; width: 220px;
+    }
+    #floatingTimer .close-btn {
+      position: absolute; top: 5px; right: 5px;
+      background: transparent; border: none; font-size: 16px; cursor: pointer;
+    }
+    #floatingTimer button { margin-top: 5px; padding: 5px 10px; font-size: 14px; }
+    /* Dark Mode */
+    body.dark-mode { background: #121212; color: #e0e0e0; }
+    body.dark-mode .section { background: #1e1e1e; color: #e0e0e0; box-shadow: none; }
+    body.dark-mode input, body.dark-mode textarea, body.dark-mode select {
+      background: #333; color: #e0e0e0; border-color: #555;
+    }
+    body.dark-mode .navbar { background-color: #222; color: #e0e0e0; }
+    body.dark-mode .navbar button { color: #e0e0e0; }
+    body.dark-mode .add-btn { background-color: #388e3c; }
+    body.dark-mode .small-btn { background-color: #555; }
+    body.dark-mode #completionChart { background: #1e1e1e; }
+    body.dark-mode #journalDisplay { background: #1e1e1e; border-color: #555; }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="navbar-left">
+      <!-- The title is now a clickable button -->
+      <button id="homeBtn">the best me</button>
+    </div>
+    <div class="navbar-center">
+      <button id="dailyNavBtn">Daily Checklist</button>
+      <button id="manageNavBtn">Manage Tasks</button>
+      <button id="workTimeNavBtn">Work Time</button>
+      <button id="historyNavBtn">Edit History</button>
+      <button id="goalsNavBtn">Goals</button>
+    </div>
+    <div class="navbar-right">
+      <button id="darkModeToggle" class="small-btn">Dark Mode</button>
+    </div>
+  </nav>
+
+  <div class="container">
+    <!-- Daily Checklist Section -->
+    <div id="dailyChecklist" class="section active">
+      <h2>Daily Checklist (<span id="todayDate"></span>)</h2>
+      <!-- Daily Checklist Content Here -->
+      <div class="sub-section">
+        <h3>Daily Routine</h3>
+        <ul id="routineList"></ul>
+      </div>
+      <div class="sub-section">
+        <h3>To Do Tasks</h3>
+        <ul id="toDoList"></ul>
+      </div>
+      <div class="sub-section">
+        <h3>Not-To-Do Tasks</h3>
+        <ul id="notChecklist"></ul>
+      </div>
+      <button id="resetDailyBtn" class="add-btn">Reset Today's Checklist</button>
+      <div class="feeling-input">
+        <label for="feelingGrade">How did you feel today? (1-10): </label>
+        <select id="feelingGrade" class="feeling-select">
+          <option value="">Select...</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10">10</option>
+        </select>
+      </div>
+      <div class="journal-section">
+        <h3>Daily Journal</h3>
+        <textarea id="journalInput" rows="4" placeholder="Write your journal for today..."></textarea>
+        <br>
+        <button id="saveJournalBtn" class="add-btn">Save Journal</button>
+      </div>
+      <h3>Daily Completion Chart</h3>
+      <canvas id="completionChart" width="400" height="200"></canvas>
+      <div id="journalDisplay">
+        Click a chart bar or point to view that day's journal entry and task details.
+      </div>
+    </div>
+
+    <!-- Manage Tasks Section -->
+    <div id="manageTasks" class="section">
+      <h2>Manage Tasks</h2>
+      <!-- Manage Tasks Content Here -->
+      <div class="sub-section">
+        <h3>Daily Routine</h3>
+        <div class="input-group">
+          <input type="text" id="newRoutineInput" placeholder="Enter new daily routine task" />
+          <button id="addRoutineBtn" class="add-btn">Add Task</button>
+        </div>
+        <ul id="dailyRoutineList"></ul>
+      </div>
+      <div class="sub-section">
+        <h3>To Do Tasks</h3>
+        <div class="input-group">
+          <input type="text" id="newToDoInput" placeholder="Enter new to do task" />
+          <input type="date" id="newToDoDeadline" />
+          <select id="newToDoColor">
+            <option value="">Select color...</option>
+            <option value="green">Green</option>
+            <option value="yellow">Yellow</option>
+            <option value="red">Red</option>
+          </select>
+          <button id="addToDoTaskBtn" class="add-btn">Add Task</button>
+        </div>
+        <ul id="toDoTasksList"></ul>
+      </div>
+      <div class="sub-section">
+        <h3>Not-To-Do Tasks</h3>
+        <div class="input-group">
+          <input type="text" id="newNotTaskInput" placeholder="Enter new not-to-do task" />
+          <button id="addNotTaskBtn" class="add-btn">Add Task</button>
+        </div>
+        <ul id="dailyNotTasksList"></ul>
+      </div>
+    </div>
+
+    <!-- Work Time Section -->
+    <div id="workTimeSection" class="section">
+      <h2>Work Time (<span id="workTodayDate"></span>)</h2>
+      <!-- Work Time Content Here -->
+      <div class="sub-section input-group">
+        <input type="text" id="newProjectInput" placeholder="Enter new project name" />
+        <button id="addProjectBtn" class="add-btn">Add Project</button>
+      </div>
+      <ul id="projectList"></ul>
+      <div>
+        <strong>Total Work Time: </strong><span id="totalWorkTimeDisplay">0:00:00</span>
+      </div>
+    </div>
+
+    <!-- Edit History Section -->
+    <div id="historySection" class="section">
+      <h2>Edit Previous Day</h2>
+      <!-- Edit History Content Here -->
+      <div class="input-group">
+        <input type="date" id="historyDatePicker" />
+        <button id="loadHistoryBtn" class="add-btn">Load</button>
+      </div>
+      <!-- Feeling Grade Selector for History -->
+      <div class="feeling-input">
+        <label for="historyFeelingGrade">How did you feel that day? (1-10): </label>
+        <select id="historyFeelingGrade" class="feeling-select">
+          <option value="">Select...</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10">10</option>
+        </select>
+      </div>
+      <div id="historyContent">
+        <div class="sub-section">
+          <h3>Daily Routine</h3>
+          <ul id="historyRoutineList"></ul>
+        </div>
+        <div class="sub-section">
+          <h3>To Do Tasks</h3>
+          <ul id="historyToDoList"></ul>
+        </div>
+        <div class="sub-section">
+          <h3>Not-To-Do Tasks</h3>
+          <ul id="historyNotChecklist"></ul>
+        </div>
+        <div class="journal-section">
+          <h3>Journal</h3>
+          <textarea id="historyJournalInput" rows="4" placeholder="Write journal for this day..."></textarea>
+          <br>
+          <button id="saveHistoryBtn" class="add-btn">Save Changes</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Goals Section -->
+    <div id="goalsSection" class="section">
+      <h2>Goals for the Year</h2>
+      <div class="sub-section">
+        <p>Set your goals for the year. You can add multiple goals by entering them on separate lines.</p>
+        <textarea id="yearlyGoalsInput" rows="6" placeholder="e.g. Improve health, Learn a new language, ..."></textarea>
+        <br>
+        <button id="saveGoalsBtn" class="add-btn">Save Goals</button>
+      </div>
+      <div class="sub-section">
+        <h3>Your Goals:</h3>
+        <div id="goalsDisplay" style="white-space: pre-wrap; border: 1px solid #ccc; padding: 10px; border-radius: 5px; background-color: #fafafa;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Timer -->
+  <div id="floatingTimer">
+    <button class="close-btn" id="floatingTimerClose">X</button>
+    <div id="floatingTimerContent">
+      <strong id="floatingTimerProjectName"></strong><br>
+      <span id="floatingTimerTime">0:00:00</span>
+    </div>
+    <div style="margin-top: 10px;">
+      <button id="floatingTimerToggle" class="small-btn">Pause</button>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      // Global variable for floating timer project tracking.
+      let activeWorkProjectId = null;
+      const feelingSelect = document.getElementById("feelingGrade");
+
+      // Local Storage Keys
+      const DAILY_ROUTINE_KEY = "dailyRoutineList";
+      const TO_DO_TASKS_KEY = "toDoTaskList";
+      const DAILY_NOT_TASKS_KEY = "dailyNotTaskList";
+      const COMPLETION_HISTORY_KEY = "completionHistory";
+      const DAILY_JOURNAL_KEY = "dailyJournal";
+      const WORK_PROJECTS_KEY = "workProjects";
+      const YEARLY_GOALS_KEY = "yearlyGoals";
+
+      // Data Retrieval
+      let dailyRoutine = JSON.parse(localStorage.getItem(DAILY_ROUTINE_KEY)) || [];
+      let toDoTasks = JSON.parse(localStorage.getItem(TO_DO_TASKS_KEY)) || [];
+      let notToDoTasks = JSON.parse(localStorage.getItem(DAILY_NOT_TASKS_KEY)) || [];
+      let completionHistory = JSON.parse(localStorage.getItem(COMPLETION_HISTORY_KEY)) || {};
+      let dailyJournal = JSON.parse(localStorage.getItem(DAILY_JOURNAL_KEY)) || {};
+      let workProjects = JSON.parse(localStorage.getItem(WORK_PROJECTS_KEY)) || [];
+      let yearlyGoals = localStorage.getItem(YEARLY_GOALS_KEY) || "";
+      if (!Array.isArray(workProjects)) { workProjects = []; }
+
+      // Status objects (keyed by date)
+      let dailyRoutineStatus = JSON.parse(localStorage.getItem("dailyRoutineStatus")) || {};
+      let toDoTaskStatus = JSON.parse(localStorage.getItem("toDoTaskStatus")) || {};
+      let dailyNotStatus = JSON.parse(localStorage.getItem("dailyNotTasksStatus")) || {};
+
+      // Set yearly goals display on load.
+      document.getElementById("goalsDisplay").textContent = yearlyGoals;
+
+      function getToday() { return new Date().toISOString().split("T")[0]; }
+      function formatTime(seconds) {
+        let hrs = Math.floor(seconds / 3600);
+        let mins = Math.floor((seconds % 3600) / 60);
+        let secs = Math.floor(seconds % 60);
+        return hrs + ":" + (mins < 10 ? "0" : "") + mins + ":" + (secs < 10 ? "0" : "") + secs;
+      }
+      function getColorRank(color) {
+        if (color === "red") return 1;
+        if (color === "yellow") return 2;
+        if (color === "green") return 3;
+        return 4;
+      }
+
+      const today = getToday();
+      document.getElementById("todayDate").textContent = today;
+      document.getElementById("workTodayDate").textContent = today;
+
+      // Navbar & Dark Mode
+      document.getElementById("darkModeToggle").addEventListener("click", function() {
+        document.body.classList.toggle("dark-mode");
+        this.textContent = document.body.classList.contains("dark-mode") ? "Light Mode" : "Dark Mode";
+      });
+      let prevScrollPos = window.pageYOffset;
+      window.onscroll = function() {
+        let currentScrollPos = window.pageYOffset;
+        const navbar = document.querySelector(".navbar");
+        navbar.style.top = prevScrollPos > currentScrollPos ? "0" : "-70px";
+        prevScrollPos = currentScrollPos;
+      };
+
+      // Navigation
+      const homeBtn = document.getElementById("homeBtn");
+      const dailyNavBtn = document.getElementById("dailyNavBtn");
+      const manageNavBtn = document.getElementById("manageNavBtn");
+      const workTimeNavBtn = document.getElementById("workTimeNavBtn");
+      const historyNavBtn = document.getElementById("historyNavBtn");
+      const goalsNavBtn = document.getElementById("goalsNavBtn");
+      const dailyChecklistSection = document.getElementById("dailyChecklist");
+      const manageTasksSection = document.getElementById("manageTasks");
+      const workTimeSection = document.getElementById("workTimeSection");
+      const historySection = document.getElementById("historySection");
+      const goalsSection = document.getElementById("goalsSection");
+
+      // Navigation event listeners.
+      homeBtn.addEventListener("click", () => {
+        dailyChecklistSection.classList.add("active");
+        manageTasksSection.classList.remove("active");
+        workTimeSection.classList.remove("active");
+        historySection.classList.remove("active");
+        goalsSection.classList.remove("active");
+        renderDailyChecklist();
+        updateChart();
+        hideFloatingTimer();
+      });
+      dailyNavBtn.addEventListener("click", () => {
+        dailyChecklistSection.classList.add("active");
+        manageTasksSection.classList.remove("active");
+        workTimeSection.classList.remove("active");
+        historySection.classList.remove("active");
+        goalsSection.classList.remove("active");
+        renderDailyChecklist();
+        updateChart();
+        hideFloatingTimer();
+      });
+      manageNavBtn.addEventListener("click", () => {
+        manageTasksSection.classList.add("active");
+        dailyChecklistSection.classList.remove("active");
+        workTimeSection.classList.remove("active");
+        historySection.classList.remove("active");
+        goalsSection.classList.remove("active");
+        renderManageDailyRoutine();
+        renderManageToDoTasks();
+        renderManageNotTasks();
+        showFloatingTimerIfNeeded();
+      });
+      workTimeNavBtn.addEventListener("click", () => {
+        workTimeSection.classList.add("active");
+        dailyChecklistSection.classList.remove("active");
+        manageTasksSection.classList.remove("active");
+        historySection.classList.remove("active");
+        goalsSection.classList.remove("active");
+        renderWorkProjects();
+        updateTotalWorkTime();
+        hideFloatingTimer();
+      });
+      historyNavBtn.addEventListener("click", () => {
+        historySection.classList.add("active");
+        dailyChecklistSection.classList.remove("active");
+        manageTasksSection.classList.remove("active");
+        workTimeSection.classList.remove("active");
+        goalsSection.classList.remove("active");
+        hideFloatingTimer();
+      });
+      goalsNavBtn.addEventListener("click", () => {
+        goalsSection.classList.add("active");
+        dailyChecklistSection.classList.remove("active");
+        manageTasksSection.classList.remove("active");
+        workTimeSection.classList.remove("active");
+        historySection.classList.remove("active");
+        hideFloatingTimer();
+      });
+
+      // DAILY CHECKLIST FUNCTIONS
+      function renderDailyChecklist() {
+        const routineList = document.getElementById("routineList");
+        routineList.innerHTML = "";
+        if (!dailyRoutineStatus[today]) { dailyRoutineStatus[today] = {}; }
+        dailyRoutine.forEach(task => {
+          const li = document.createElement("li");
+          const checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+          checkbox.id = "routine-" + task.id;
+          checkbox.checked = !!dailyRoutineStatus[today][task.id];
+          checkbox.addEventListener("change", () => {
+            dailyRoutineStatus[today][task.id] = checkbox.checked;
+            localStorage.setItem("dailyRoutineStatus", JSON.stringify(dailyRoutineStatus));
+            updateCompletionHistory();
+            updateChart();
+          });
+          const label = document.createElement("label");
+          label.htmlFor = "routine-" + task.id;
+          label.textContent = task.description;
+          li.appendChild(checkbox);
+          li.appendChild(label);
+          routineList.appendChild(li);
+        });
+
+        const toDoList = document.getElementById("toDoList");
+        toDoList.innerHTML = "";
+        if (!toDoTaskStatus[today]) { toDoTaskStatus[today] = {}; }
+        const sortedToDoTasks = toDoTasks.slice().sort((a, b) => getColorRank(a.color) - getColorRank(b.color));
+        sortedToDoTasks.forEach(task => {
+          const li = document.createElement("li");
+          li.classList.add(task.color === "green" ? "task-green" : task.color === "yellow" ? "task-yellow" : task.color === "red" ? "task-red" : "");
+          const checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+          checkbox.id = "todo-" + task.id;
+          checkbox.checked = !!toDoTaskStatus[today][task.id];
+          checkbox.addEventListener("change", () => {
+            toDoTaskStatus[today][task.id] = checkbox.checked;
+            localStorage.setItem("toDoTaskStatus", JSON.stringify(toDoTaskStatus));
+            updateCompletionHistory();
+            updateChart();
+          });
+          const label = document.createElement("label");
+          label.htmlFor = "todo-" + task.id;
+          label.textContent = task.description;
+          const deadlineSpan = document.createElement("span");
+          deadlineSpan.textContent = task.deadline ? " (Due: " + task.deadline + ")" : "";
+          li.appendChild(checkbox);
+          li.appendChild(label);
+          li.appendChild(deadlineSpan);
+          toDoList.appendChild(li);
+        });
+
+        const notChecklist = document.getElementById("notChecklist");
+        notChecklist.innerHTML = "";
+        if (!dailyNotStatus[today]) { dailyNotStatus[today] = {}; }
+        notToDoTasks.forEach(task => {
+          const li = document.createElement("li");
+          const checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+          checkbox.id = "nottask-" + task.id;
+          checkbox.checked = !!dailyNotStatus[today][task.id];
+          checkbox.addEventListener("change", () => {
+            dailyNotStatus[today][task.id] = checkbox.checked;
+            localStorage.setItem("dailyNotTasksStatus", JSON.stringify(dailyNotStatus));
+            updateCompletionHistory();
+            updateChart();
+          });
+          const label = document.createElement("label");
+          label.htmlFor = "nottask-" + task.id;
+          label.textContent = task.description;
+          li.appendChild(checkbox);
+          li.appendChild(label);
+          notChecklist.appendChild(li);
+        });
+
+        document.getElementById("journalInput").value = dailyJournal[today] || "";
+        feelingSelect.value = (completionHistory[today] && completionHistory[today].feeling !== undefined) ? completionHistory[today].feeling : "";
+        
+        checkToDoTaskDeadlines();
+      }
+
+      document.getElementById("resetDailyBtn").addEventListener("click", () => {
+        dailyRoutineStatus[today] = {};
+        dailyNotStatus[today] = {};
+        toDoTaskStatus[today] = {};
+        localStorage.setItem("dailyRoutineStatus", JSON.stringify(dailyRoutineStatus));
+        localStorage.setItem("dailyNotTasksStatus", JSON.stringify(dailyNotStatus));
+        localStorage.setItem("toDoTaskStatus", JSON.stringify(toDoTaskStatus));
+        renderDailyChecklist();
+        updateCompletionHistory();
+        updateChart();
+      });
+
+      document.getElementById("saveJournalBtn").addEventListener("click", () => {
+        const journalText = document.getElementById("journalInput").value;
+        dailyJournal[today] = journalText;
+        localStorage.setItem(DAILY_JOURNAL_KEY, JSON.stringify(dailyJournal));
+        alert("Journal saved!");
+      });
+
+      // MANAGE TASKS FUNCTIONS
+      function renderManageDailyRoutine() {
+        const list = document.getElementById("dailyRoutineList");
+        list.innerHTML = "";
+        dailyRoutine.forEach(task => {
+          const li = document.createElement("li");
+          li.textContent = task.description + " ";
+          const editBtn = document.createElement("button");
+          editBtn.textContent = "Edit"; 
+          editBtn.classList.add("small-btn");
+          editBtn.addEventListener("click", () => {
+            let newDesc = prompt("Edit daily routine task:", task.description);
+            if (newDesc && newDesc.trim() !== "") {
+              task.description = newDesc.trim();
+              localStorage.setItem(DAILY_ROUTINE_KEY, JSON.stringify(dailyRoutine));
+              renderManageDailyRoutine();
+            }
+          });
+          const delBtn = document.createElement("button");
+          delBtn.textContent = "Delete"; 
+          delBtn.classList.add("small-btn");
+          delBtn.addEventListener("click", () => {
+            dailyRoutine = dailyRoutine.filter(t => t.id !== task.id);
+            localStorage.setItem(DAILY_ROUTINE_KEY, JSON.stringify(dailyRoutine));
+            renderManageDailyRoutine();
+          });
+          li.appendChild(editBtn);
+          li.appendChild(delBtn);
+          list.appendChild(li);
+        });
+      }
+
+      function renderManageToDoTasks() {
+        const list = document.getElementById("toDoTasksList");
+        list.innerHTML = "";
+        const sortedToDoTasks = toDoTasks.slice().sort((a, b) => getColorRank(a.color) - getColorRank(b.color));
+        sortedToDoTasks.forEach(task => {
+          const li = document.createElement("li");
+          li.style.backgroundColor = task.color === "green" ? "rgba(76,175,80,0.3)" :
+                                      task.color === "yellow" ? "rgba(255,193,7,0.3)" :
+                                      task.color === "red" ? "rgba(244,67,54,0.3)" : "";
+          li.style.padding = "5px";
+          li.textContent = task.description + " ";
+          if (task.deadline) li.textContent += " (Due: " + task.deadline + ") ";
+          const editBtn = document.createElement("button");
+          editBtn.textContent = "Edit"; 
+          editBtn.classList.add("small-btn");
+          editBtn.addEventListener("click", () => {
+            let newDesc = prompt("Edit to do task description:", task.description);
+            let newDeadline = prompt("Edit deadline (YYYY-MM-DD):", task.deadline || "");
+            if (newDesc && newDesc.trim() !== "") {
+              task.description = newDesc.trim();
+              task.deadline = newDeadline;
+              localStorage.setItem(TO_DO_TASKS_KEY, JSON.stringify(toDoTasks));
+              renderManageToDoTasks();
+            }
+          });
+          const delBtn = document.createElement("button");
+          delBtn.textContent = "Delete"; 
+          delBtn.classList.add("small-btn");
+          delBtn.addEventListener("click", () => {
+            toDoTasks = toDoTasks.filter(t => t.id !== task.id);
+            localStorage.setItem(TO_DO_TASKS_KEY, JSON.stringify(toDoTasks));
+            renderManageToDoTasks();
+          });
+          const colorSelect = document.createElement("select");
+          colorSelect.classList.add("small-select");
+          ["red", "yellow", "green"].forEach(c => {
+            const opt = document.createElement("option");
+            opt.value = c;
+            opt.textContent = c.charAt(0).toUpperCase() + c.slice(1);
+            colorSelect.appendChild(opt);
+          });
+          colorSelect.value = task.color || "";
+          colorSelect.addEventListener("change", () => {
+            task.color = colorSelect.value;
+            localStorage.setItem(TO_DO_TASKS_KEY, JSON.stringify(toDoTasks));
+            renderManageToDoTasks();
+          });
+          li.appendChild(editBtn);
+          li.appendChild(delBtn);
+          li.appendChild(colorSelect);
+          list.appendChild(li);
+        });
+      }
+
+      function renderManageNotTasks() {
+        const list = document.getElementById("dailyNotTasksList");
+        list.innerHTML = "";
+        notToDoTasks.forEach(task => {
+          const li = document.createElement("li");
+          li.textContent = task.description + " ";
+          const editBtn = document.createElement("button");
+          editBtn.textContent = "Edit"; 
+          editBtn.classList.add("small-btn");
+          editBtn.addEventListener("click", () => {
+            let newDesc = prompt("Edit not-to-do task:", task.description);
+            if (newDesc && newDesc.trim() !== "") {
+              task.description = newDesc.trim();
+              localStorage.setItem(DAILY_NOT_TASKS_KEY, JSON.stringify(notToDoTasks));
+              renderManageNotTasks();
+            }
+          });
+          const delBtn = document.createElement("button");
+          delBtn.textContent = "Delete"; 
+          delBtn.classList.add("small-btn");
+          delBtn.addEventListener("click", () => {
+            notToDoTasks = notToDoTasks.filter(t => t.id !== task.id);
+            localStorage.setItem(DAILY_NOT_TASKS_KEY, JSON.stringify(notToDoTasks));
+            renderManageNotTasks();
+          });
+          li.appendChild(editBtn);
+          li.appendChild(delBtn);
+          list.appendChild(li);
+        });
+      }
+
+      document.getElementById("addRoutineBtn").addEventListener("click", () => {
+        const input = document.getElementById("newRoutineInput");
+        const desc = input.value.trim();
+        if (!desc) return;
+        const task = { id: Date.now(), description: desc };
+        dailyRoutine.push(task);
+        localStorage.setItem(DAILY_ROUTINE_KEY, JSON.stringify(dailyRoutine));
+        input.value = "";
+        renderManageDailyRoutine();
+      });
+
+      document.getElementById("addToDoTaskBtn").addEventListener("click", () => {
+        const input = document.getElementById("newToDoInput");
+        const deadline = document.getElementById("newToDoDeadline").value;
+        const color = document.getElementById("newToDoColor").value;
+        const desc = input.value.trim();
+        if (!desc) return;
+        const task = { id: Date.now(), description: desc, deadline: deadline, color: color };
+        toDoTasks.push(task);
+        localStorage.setItem(TO_DO_TASKS_KEY, JSON.stringify(toDoTasks));
+        input.value = "";
+        document.getElementById("newToDoDeadline").value = "";
+        document.getElementById("newToDoColor").value = "";
+        renderManageToDoTasks();
+      });
+
+      document.getElementById("addNotTaskBtn").addEventListener("click", () => {
+        const input = document.getElementById("newNotTaskInput");
+        const desc = input.value.trim();
+        if (!desc) return;
+        const task = { id: Date.now(), description: desc };
+        notToDoTasks.push(task);
+        localStorage.setItem(DAILY_NOT_TASKS_KEY, JSON.stringify(notToDoTasks));
+        input.value = "";
+        renderManageNotTasks();
+      });
+
+      // WORK TIME FUNCTIONS
+      function renderWorkProjects() {
+        const projectList = document.getElementById("projectList");
+        projectList.innerHTML = "";
+        workProjects.forEach(project => {
+          const li = document.createElement("li");
+          let elapsed = project.totalTime;
+          if (project.isRunning && project.startTimestamp) {
+            elapsed += (Date.now() - project.startTimestamp) / 1000;
+          }
+          li.innerHTML = `<strong>${project.name}</strong> - ${formatTime(elapsed)}`;
+          const toggleBtn = document.createElement("button");
+          toggleBtn.textContent = project.isRunning ? "Stop" : "Start";
+          toggleBtn.addEventListener("click", () => { toggleProject(project.id); });
+          li.appendChild(toggleBtn);
+          const delBtn = document.createElement("button");
+          delBtn.textContent = "Delete"; 
+          delBtn.classList.add("small-btn");
+          delBtn.addEventListener("click", () => {
+            workProjects = workProjects.filter(p => p.id !== project.id);
+            if (activeWorkProjectId === project.id) { activeWorkProjectId = null; }
+            localStorage.setItem(WORK_PROJECTS_KEY, JSON.stringify(workProjects));
+            renderWorkProjects();
+            updateTotalWorkTime();
+            updateChart();
+          });
+          li.appendChild(delBtn);
+          projectList.appendChild(li);
+        });
+      }
+
+      function toggleProject(id) {
+        const project = workProjects.find(p => p.id === id);
+        if (!project) return;
+        if (!project.isRunning) {
+          project.isRunning = true;
+          project.startTimestamp = Date.now();
+          activeWorkProjectId = id;
+        } else {
+          const elapsed = (Date.now() - project.startTimestamp) / 1000;
+          project.totalTime += elapsed;
+          project.isRunning = false;
+        }
+        localStorage.setItem(WORK_PROJECTS_KEY, JSON.stringify(workProjects));
+        renderWorkProjects();
+        updateTotalWorkTime();
+        updateChart();
+        updateFloatingTimer();
+      }
+
+      document.getElementById("addProjectBtn").addEventListener("click", () => {
+        const input = document.getElementById("newProjectInput");
+        const name = input.value.trim();
+        if (!name) return;
+        const project = { id: Date.now(), name: name, totalTime: 0, isRunning: false };
+        workProjects.push(project);
+        localStorage.setItem(WORK_PROJECTS_KEY, JSON.stringify(workProjects));
+        input.value = "";
+        renderWorkProjects();
+      });
+
+      function updateTotalWorkTime() {
+        let totalSeconds = 0;
+        workProjects.forEach(p => {
+          let elapsed = p.totalTime;
+          if (p.isRunning && p.startTimestamp) {
+            elapsed += (Date.now() - p.startTimestamp) / 1000;
+          }
+          totalSeconds += elapsed;
+        });
+        document.getElementById("totalWorkTimeDisplay").textContent = formatTime(totalSeconds);
+        completionHistory[today] = completionHistory[today] || {};
+        completionHistory[today].workTime = Math.floor(totalSeconds / 60);
+        localStorage.setItem(COMPLETION_HISTORY_KEY, JSON.stringify(completionHistory));
+      }
+
+      setInterval(() => {
+        if (workTimeSection.classList.contains("active")) {
+          renderWorkProjects();
+          updateTotalWorkTime();
+        }
+        updateFloatingTimer();
+      }, 1000);
+
+      // FLOATING TIMER FUNCTIONS
+      function getRunningWorkProject() {
+        return workProjects.find(p => p.isRunning);
+      }
+
+      function updateFloatingTimer() {
+        let project = null;
+        if (activeWorkProjectId) {
+          project = workProjects.find(p => p.id === activeWorkProjectId);
+        }
+        if (project) {
+          const floatingTimer = document.getElementById("floatingTimer");
+          floatingTimer.style.display = "block";
+          document.getElementById("floatingTimerProjectName").textContent = project.name;
+          let elapsed = project.totalTime;
+          if (project.isRunning && project.startTimestamp) {
+            elapsed += (Date.now() - project.startTimestamp) / 1000;
+          }
+          document.getElementById("floatingTimerTime").textContent = formatTime(elapsed);
+          const floatingTimerToggle = document.getElementById("floatingTimerToggle");
+          floatingTimerToggle.textContent = project.isRunning ? "Pause" : "Start";
+          floatingTimer.dataset.projectId = project.id;
+        } else {
+          document.getElementById("floatingTimer").style.display = "none";
+        }
+      }
+
+      document.getElementById("floatingTimerToggle").addEventListener("click", () => {
+        const id = Number(document.getElementById("floatingTimer").dataset.projectId);
+        if (id) { toggleProject(id); }
+      });
+      document.getElementById("floatingTimerClose").addEventListener("click", () => {
+        document.getElementById("floatingTimer").style.display = "none";
+        activeWorkProjectId = null;
+      });
+      function showFloatingTimerIfNeeded() { updateFloatingTimer(); }
+      function hideFloatingTimer() { document.getElementById("floatingTimer").style.display = "none"; }
+
+      // CHART UPDATE FUNCTION
+      const ctx = document.getElementById("completionChart").getContext("2d");
+      let myChart;
+      function updateChart() {
+        const dates = Object.keys(completionHistory).sort();
+        const routineCompletedData = dates.map(date => completionHistory[date].routineCompleted);
+        const toDoCompletedData = dates.map(date => completionHistory[date].toDoCompleted);
+        const routineTotalData = dates.map(date => completionHistory[date].routineTotal);
+        const toDoTotalData = dates.map(date => completionHistory[date].toDoTotal);
+        const notToDoData = dates.map(date => completionHistory[date].notCompleted || 0);
+        const feelingData = dates.map(date =>
+          completionHistory[date].feeling !== undefined ? completionHistory[date].feeling : null
+        );
+        const workTimeData = dates.map(date => completionHistory[date].workTime || 0);
+        if (myChart) { myChart.destroy(); }
+        myChart = new Chart(ctx, {
+          data: {
+            labels: dates,
+            datasets: [
+              {
+                label: "Routine Completed",
+                data: routineCompletedData,
+                backgroundColor: "rgba(76,175,80,0.6)",
+                type: "bar",
+                yAxisID: "y"
+              },
+              {
+                label: "To Do Completed",
+                data: toDoCompletedData,
+                backgroundColor: "rgba(244,67,54,0.6)",
+                type: "bar",
+                yAxisID: "y"
+              },
+              {
+                label: "Not-To-Do Tasks Done",
+                data: notToDoData,
+                backgroundColor: "rgba(255,99,132,0.6)",
+                type: "bar",
+                yAxisID: "y"
+              },
+              {
+                label: "Feeling Grade",
+                data: feelingData,
+                type: "line",
+                borderColor: "rgba(255,159,64,1)",
+                backgroundColor: "rgba(255,159,64,0.2)",
+                fill: false,
+                yAxisID: "y1"
+              },
+              {
+                label: "Work Time (min)",
+                data: workTimeData,
+                backgroundColor: "rgba(100,149,237,0.6)",
+                type: "bar",
+                yAxisID: "y2"
+              }
+            ]
+          },
+          options: {
+            onClick: function(evt, activeEls) {
+              if (activeEls && activeEls.length > 0 && activeEls[0].index != null) {
+                const idx = activeEls[0].index;
+                const dateClicked = this.data.labels[idx];
+                const journalText = dailyJournal[dateClicked] || "No journal entry for this day.";
+                let detailsHTML = `<h4>Journal for ${dateClicked}:</h4><p>${journalText}</p>`;
+                
+                let routineDone = "<ul>";
+                let routineNotDone = "<ul>";
+                const rStatus = dailyRoutineStatus[dateClicked] || {};
+                dailyRoutine.forEach(task => {
+                  if (rStatus[task.id]) {
+                    routineDone += `<li style="background-color:#c8e6c9; padding:5px; margin:2px 0;">${task.description}</li>`;
+                  } else {
+                    routineNotDone += `<li style="background-color:#ffcdd2; padding:5px; margin:2px 0;">${task.description}</li>`;
+                  }
+                });
+                routineDone += "</ul>";
+                routineNotDone += "</ul>";
+                detailsHTML += "<h4>Daily Routine - Completed:</h4>" + routineDone;
+                detailsHTML += "<h4>Daily Routine - Not Completed:</h4>" + routineNotDone;
+                
+                let toDoDone = "<ul>";
+                let toDoNotDone = "<ul>";
+                const tStatus = toDoTaskStatus[dateClicked] || {};
+                toDoTasks.forEach(task => {
+                  let desc = task.description + (task.deadline ? ` (Due: ${task.deadline})` : "");
+                  if (tStatus[task.id]) {
+                    toDoDone += `<li style="background-color:#c8e6c9; padding:5px; margin:2px 0;">${desc}</li>`;
+                  } else {
+                    toDoNotDone += `<li style="background-color:#ffcdd2; padding:5px; margin:2px 0;">${desc}</li>`;
+                  }
+                });
+                toDoDone += "</ul>";
+                toDoNotDone += "</ul>";
+                detailsHTML += "<h4>To Do Tasks - Completed:</h4>" + toDoDone;
+                detailsHTML += "<h4>To Do Tasks - Not Completed:</h4>" + toDoNotDone;
+                
+                let notDoDone = "<ul>";
+                let notDoNotDone = "<ul>";
+                const nStatus = dailyNotStatus[dateClicked] || {};
+                notToDoTasks.forEach(task => {
+                  if (nStatus[task.id]) {
+                    notDoDone += `<li style="background-color:#c8e6c9; padding:5px; margin:2px 0;">${task.description}</li>`;
+                  } else {
+                    notDoNotDone += `<li style="background-color:#ffcdd2; padding:5px; margin:2px 0;">${task.description}</li>`;
+                  }
+                });
+                notDoDone += "</ul>";
+                notDoNotDone += "</ul>";
+                detailsHTML += "<h4>Not-To-Do Tasks - Completed:</h4>" + notDoDone;
+                detailsHTML += "<h4>Not-To-Do Tasks - Not Completed:</h4>" + notDoNotDone;
+                
+                document.getElementById("journalDisplay").innerHTML = detailsHTML;
+              }
+            },
+            scales: {
+              y: { beginAtZero: true, position: "left", title: { display: true, text: "Tasks" } },
+              y1: {
+                beginAtZero: true, position: "right", title: { display: true, text: "Feeling Grade" },
+                grid: { drawOnChartArea: false }, ticks: { stepSize: 1, min: 0, max: 10 }
+              },
+              y2: {
+                beginAtZero: true, position: "right", title: { display: true, text: "Work Time (min)" },
+                grid: { drawOnChartArea: false }
+              }
+            }
+          }
+        });
+      }
+
+      function updateCompletionHistory() {
+        let routineCompleted = dailyRoutineStatus[today] ? Object.values(dailyRoutineStatus[today]).filter(Boolean).length : 0;
+        let toDoCompleted = toDoTaskStatus[today] ? Object.values(toDoTaskStatus[today]).filter(Boolean).length : 0;
+        completionHistory[today] = completionHistory[today] || {};
+        completionHistory[today].routineCompleted = routineCompleted;
+        completionHistory[today].routineTotal = dailyRoutine.length;
+        completionHistory[today].toDoCompleted = toDoCompleted;
+        completionHistory[today].toDoTotal = toDoTasks.length;
+        let notCompletedCount = dailyNotStatus[today] ? Object.values(dailyNotStatus[today]).filter(Boolean).length : 0;
+        completionHistory[today].notCompleted = notCompletedCount;
+        completionHistory[today].notTotal = notToDoTasks.length;
+        localStorage.setItem(COMPLETION_HISTORY_KEY, JSON.stringify(completionHistory));
+      }
+
+      feelingSelect.addEventListener("change", () => {
+        completionHistory[today] = completionHistory[today] || {};
+        completionHistory[today].feeling = feelingSelect.value === "" ? null : Number(feelingSelect.value);
+        localStorage.setItem(COMPLETION_HISTORY_KEY, JSON.stringify(completionHistory));
+        updateChart();
+      });
+
+      function checkToDoTaskDeadlines() {
+        const todayDate = new Date(getToday());
+        let tomorrowDate = new Date(getToday());
+        tomorrowDate.setDate(tomorrowDate.getDate() + 1);
+        let updated = false;
+        for (let i = 0; i < toDoTasks.length; i++) {
+          let task = toDoTasks[i];
+          if (task.deadline) {
+            let taskDate = new Date(task.deadline);
+            if (taskDate.getTime() === tomorrowDate.getTime() && !task.notified) {
+              alert("Task '" + task.description + "' is about to expire tomorrow.");
+              task.notified = true;
+              updated = true;
+            }
+            if (taskDate.getTime() === todayDate.getTime()) {
+              let confirmResult = confirm("Task '" + task.description + "' is due today. Were you done? Click OK to delete, Cancel to update deadline.");
+              if (confirmResult) {
+                toDoTasks.splice(i, 1);
+                i--;
+                updated = true;
+              } else {
+                let newDeadline = prompt("Enter new deadline for task '" + task.description + "' (YYYY-MM-DD):", task.deadline);
+                if (newDeadline) {
+                  task.deadline = newDeadline;
+                  task.notified = false;
+                  updated = true;
+                }
+              }
+            }
+          }
+        }
+        if (updated) {
+          localStorage.setItem(TO_DO_TASKS_KEY, JSON.stringify(toDoTasks));
+          renderDailyChecklist();
+          renderManageToDoTasks();
+          updateCompletionHistory();
+          updateChart();
+        }
+      }
+      setInterval(checkToDoTaskDeadlines, 60000);
+
+      // HISTORY SECTION FUNCTIONS
+      function renderHistoryChecklist(selectedDate) {
+        // Daily Routine
+        const routineList = document.getElementById("historyRoutineList");
+        routineList.innerHTML = "";
+        if (!dailyRoutineStatus[selectedDate]) { dailyRoutineStatus[selectedDate] = {}; }
+        dailyRoutine.forEach(task => {
+          const li = document.createElement("li");
+          const checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+          checkbox.id = "history-routine-" + task.id;
+          checkbox.checked = !!dailyRoutineStatus[selectedDate][task.id];
+          checkbox.addEventListener("change", () => {
+            dailyRoutineStatus[selectedDate][task.id] = checkbox.checked;
+            localStorage.setItem("dailyRoutineStatus", JSON.stringify(dailyRoutineStatus));
+          });
+          const label = document.createElement("label");
+          label.htmlFor = "history-routine-" + task.id;
+          label.textContent = task.description;
+          li.appendChild(checkbox);
+          li.appendChild(label);
+          routineList.appendChild(li);
+        });
+        // To Do Tasks
+        const toDoList = document.getElementById("historyToDoList");
+        toDoList.innerHTML = "";
+        if (!toDoTaskStatus[selectedDate]) { toDoTaskStatus[selectedDate] = {}; }
+        const sortedToDoTasks = toDoTasks.slice().sort((a, b) => getColorRank(a.color) - getColorRank(b.color));
+        sortedToDoTasks.forEach(task => {
+          const li = document.createElement("li");
+          li.classList.add(task.color === "green" ? "task-green" : task.color === "yellow" ? "task-yellow" : task.color === "red" ? "task-red" : "");
+          const checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+          checkbox.id = "history-todo-" + task.id;
+          checkbox.checked = !!toDoTaskStatus[selectedDate][task.id];
+          checkbox.addEventListener("change", () => {
+            toDoTaskStatus[selectedDate][task.id] = checkbox.checked;
+            localStorage.setItem("toDoTaskStatus", JSON.stringify(toDoTaskStatus));
+          });
+          const label = document.createElement("label");
+          label.htmlFor = "history-todo-" + task.id;
+          label.textContent = task.description;
+          const deadlineSpan = document.createElement("span");
+          deadlineSpan.textContent = task.deadline ? " (Due: " + task.deadline + ")" : "";
+          li.appendChild(checkbox);
+          li.appendChild(label);
+          li.appendChild(deadlineSpan);
+          toDoList.appendChild(li);
+        });
+        // Not-To-Do Tasks
+        const notChecklist = document.getElementById("historyNotChecklist");
+        notChecklist.innerHTML = "";
+        if (!dailyNotStatus[selectedDate]) { dailyNotStatus[selectedDate] = {}; }
+        notToDoTasks.forEach(task => {
+          const li = document.createElement("li");
+          const checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+          checkbox.id = "history-not-" + task.id;
+          checkbox.checked = !!dailyNotStatus[selectedDate][task.id];
+          checkbox.addEventListener("change", () => {
+            dailyNotStatus[selectedDate][task.id] = checkbox.checked;
+            localStorage.setItem("dailyNotTasksStatus", JSON.stringify(dailyNotStatus));
+          });
+          const label = document.createElement("label");
+          label.htmlFor = "history-not-" + task.id;
+          label.textContent = task.description;
+          li.appendChild(checkbox);
+          li.appendChild(label);
+          notChecklist.appendChild(li);
+        });
+        // Journal Entry
+        document.getElementById("historyJournalInput").value = dailyJournal[selectedDate] || "";
+        // Load Feeling Grade for the selected date
+        document.getElementById("historyFeelingGrade").value = (completionHistory[selectedDate] && completionHistory[selectedDate].feeling !== undefined)
+          ? completionHistory[selectedDate].feeling : "";
+      }
+
+      document.getElementById("loadHistoryBtn").addEventListener("click", () => {
+        const selectedDate = document.getElementById("historyDatePicker").value;
+        if (!selectedDate) { alert("Please select a date."); return; }
+        renderHistoryChecklist(selectedDate);
+      });
+
+      // Updated Save History event: recalc counts and update chart.
+      document.getElementById("saveHistoryBtn").addEventListener("click", () => {
+        const selectedDate = document.getElementById("historyDatePicker").value;
+        dailyJournal[selectedDate] = document.getElementById("historyJournalInput").value;
+        completionHistory[selectedDate] = completionHistory[selectedDate] || {};
+        completionHistory[selectedDate].feeling = document.getElementById("historyFeelingGrade").value === "" ? null : Number(document.getElementById("historyFeelingGrade").value);
+        const routineCompleted = dailyRoutineStatus[selectedDate] ? Object.values(dailyRoutineStatus[selectedDate]).filter(Boolean).length : 0;
+        const toDoCompleted = toDoTaskStatus[selectedDate] ? Object.values(toDoTaskStatus[selectedDate]).filter(Boolean).length : 0;
+        const notCompleted = dailyNotStatus[selectedDate] ? Object.values(dailyNotStatus[selectedDate]).filter(Boolean).length : 0;
+        completionHistory[selectedDate].routineCompleted = routineCompleted;
+        completionHistory[selectedDate].routineTotal = dailyRoutine.length;
+        completionHistory[selectedDate].toDoCompleted = toDoCompleted;
+        completionHistory[selectedDate].toDoTotal = toDoTasks.length;
+        completionHistory[selectedDate].notCompleted = notCompleted;
+        completionHistory[selectedDate].notTotal = notToDoTasks.length;
+        localStorage.setItem(DAILY_JOURNAL_KEY, JSON.stringify(dailyJournal));
+        localStorage.setItem(COMPLETION_HISTORY_KEY, JSON.stringify(completionHistory));
+        updateChart();
+        alert("History updated for " + selectedDate);
+      });
+
+      // GOALS SECTION FUNCTIONS
+      // Save yearly goals to localStorage and update the display.
+      document.getElementById("saveGoalsBtn").addEventListener("click", () => {
+        const goalsText = document.getElementById("yearlyGoalsInput").value;
+        localStorage.setItem(YEARLY_GOALS_KEY, goalsText);
+        document.getElementById("goalsDisplay").textContent = goalsText;
+        alert("Yearly goals saved!");
+      });
+
+      // Initial Render Calls
+      renderDailyChecklist();
+      updateCompletionHistory();
+      updateChart();
+    });
+  </script>
+</body>
+</html>
